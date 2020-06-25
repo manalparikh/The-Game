@@ -1,0 +1,186 @@
+# I,Manal Anand Parikh, ,certify that all code submitted is my own work;
+#that I have not copied it from any other source.  I also certify that I have not allowed
+#my work to be copied by others.
+
+import random as r
+print('COMP 10001 - W2020 Final Project by Manal Anand Parikh, Student number 000771479')
+print('Welcome to my dice game, good luck!')
+
+
+nface = input('Enter # of faces[2,20]: ')
+while True:
+    if nface.isdigit()== True:
+        if int(nface) >=2 and int(nface) <= 20:
+            break
+        else:
+            print('I\'m sorry, that isn\'t in the range 2 to 20, please try again')
+            nface = input('Enter # of faces[2,20]: ') 
+    else:
+        print('I\'m sorry, that isn\'t a valid positive integer, please try again')
+        nface = input('Enter # of faces[2,20]: ')
+
+ndice = input('Enter # of dice [3,6]: ')
+while True:
+    if ndice.isdigit()== True:
+        if int(ndice) >=3 and int(ndice) <= 6:
+            break
+        else:
+            print('I\'m sorry, that isn\'t in the range 3 to 6, please try again')
+            ndice = input('Enter # of faces[3,6]: ') 
+    else:
+        print('I\'m sorry, that isn\'t a valid positive integer, please try again')
+        ndice = input('Enter # of faces[3,6]: ')
+
+
+
+
+def game(dices,dicesum,diceavg):
+    b = 0
+    np = False
+    for i in range(2, dicesum//2+1):   
+        if (dicesum % i) == 0: 
+            np = False 
+            break
+        else: 
+            np = True 
+    if int(nface) >= 4:
+        for i in range(0,int(ndice)- 1):
+            b = 10
+            if dices[i] != dices[i+1]:
+                b = b-10
+                print('Pattern 1 not matched in your roll, ' + str(dices[0:int(ndice)]) + ' some dice are different')
+                break
+    elif int(nface)<4:
+        print('Pattern 1 does not apply, sides < 4')
+    if b ==10:
+        print('Pattern 1 matched, ' + str(dices[0:int(ndice)]) + ' all dices have the same value')
+        
+        
+    checkcount = 0
+    checkdistinct = 0
+    for i in range(0,int(ndice)):
+        if dices[i]>=diceavg:
+            checkcount = checkcount + 1
+        if i != (int(ndice)-1):
+            for j in range(i+1,int(ndice)):
+                if dices[i] == dices[j]:
+                    checkdistinct = checkdistinct + 1
+                    break
+    if (int(ndice)*int(nface)) < 20:
+        print('Pattern 2 does not apply, maximum score < 20')
+    if np == False and (int(ndice)*int(nface))>=20:
+        print('Pattern 2 not matched in your roll, ' + str(dicesum) + ' is not a prime number')
+    if np == True and (int(ndice)*int(nface))>=20:
+        print('Pattern 2 matched, ' + str(dicesum) + ' all dices have the same value')
+        b = b + 15
+    if int(ndice) < 5:
+        print('Pattern 3 does not apply, since there are less than 5 dice')
+    if checkcount < int(ndice)/2 and int(ndice)>=5:
+        print('Pattern 3 not matched in your roll, ' + str(dices[0:int(ndice)]) + ' at least half the dice are not greater than or equal to the rounded average')
+    if checkcount >= int(ndice)/2 and int(ndice)>=5:
+        print('Pattern 3 matched, ' + str(dices[0:int(ndice)]) + ' at least half the dice are greater than or equal to the rounded average')
+        b = b + 5
+    if int(ndice) <=  4 and int(nface) <= int(ndice):
+        print('Pattern 4 does not apply, either sides <= 4 or #sides <=#dice.')
+    if checkdistinct >= 1 and int(ndice)> 4 and int(nface) > int(ndice):
+        print('Pattern 4 not matched in your roll, ' + str(dices[0:int(ndice)]) + ' all the dices are not of different values')
+    if checkdistinct < 1 and int(ndice)> 4 and int(nface) > int(ndice):
+        print('Pattern 4 matched, ' + str(dices[0:int(ndice)]) + ' all the dices are of different values')
+        b = b + 8
+    if b >0:
+        print('Since you matched a pattern, pattern 5 is not matched')
+    if b==0:
+        print('Since none of the other patterns were matched, pattern 5 is matched')
+        b=1
+    return b
+    
+def inp():
+    while True:
+        dec = input('Do you want to reroll any dice? [\'yes\', \'no\'])')
+        if dec.lower() == 'yes':
+            return 1
+        elif dec.lower() == 'no':
+            return 0
+        else:
+            print('I\'m sorry, the choices are [\'yes\', \'no\']. Please pick one of them.')
+
+def inp2():
+    while True:
+        dec = input('Are you sure? [\'yes\', \'no\'])')
+        if dec.lower() == 'yes':
+            return 1
+        elif dec.lower() == 'no':
+            return 0
+        else:
+            print('I\'m sorry, the choices are [\'yes\', \'no\']. Please pick one of them.')
+
+def inp1(dices):
+    ifdices = [0, 0, 0, 0, 0,0]
+    for i in range(0,int(ndice)):
+        while True:
+            dec = input('Reroll die ' + str(i+1) + ' (was ' + str(dices[i]) + ') [\'y\', \'n\']')
+            if dec.lower() == 'y':
+                ifdices[i] = 1
+                break
+            elif dec.lower() == 'n':
+                ifdices[i] = 0
+                break
+            else:
+                print('I\'m sorry, , the choices are [\'yes\', \'no\']. Please pick one of them.')
+    return ifdices
+
+turn = 1
+ifturn = True
+totalscore = 0
+while ifturn==True:
+    dices = [0,0,0,0,0,0]
+    dicesum = 0
+    for i in range(0,int(ndice)):
+        dices[i] = r.randint(1,int(nface))
+        dicesum = dicesum + dices[i]
+    print('You have rolled: ' + str(dices[0:int(ndice)]))
+    diceavg = round(dicesum / int(ndice))
+    print('These die sum to ' + str(dicesum) + ' and have an average rounded value of ' + str(diceavg)) 
+    dicepercent = dicesum / (int(ndice)*int(nface))
+    bonusfactor = game(dices,dicesum,diceavg)
+    score = int(dicepercent*bonusfactor) + 771479 % 500
+    print('Your bonus factor is ' + str(bonusfactor))
+    print('These dice are worth ' + str(score) + ' points')
+    ifre = inp()
+    if ifre == 1:
+        ifdices = inp1(dices)
+        ifsure = inp2()
+        if ifsure == 1:
+            for i in range(0,int(ndice)):
+                if ifdices[i] == 1:
+                    dices[i] = r.randint(1,int(nface))
+            print('You have rolled: ' + str(dices[0:int(ndice)]))
+            diceavg = round(dicesum / int(ndice))
+            print('These die sum to ' + str(dicesum) + ' and have an average rounded value of ' + str(diceavg)) 
+            dicepercent = dicesum / (int(ndice)*int(nface))
+            bonusfactor = game(dices,dicesum,diceavg)
+            score = int(dicepercent*bonusfactor) + 771479 % 500
+            print('Your bonus factor is ' + str(bonusfactor))
+            print('These dice are worth ' + str(score) + ' points')
+
+    totalscore = totalscore + score
+    if turn == 1:
+        print('This was your first turn, let\'s go again!')
+    if turn >= 2:
+        if score < ((totalscore-score)/(turn-1)):
+            print('Your score of ' + str(score) + ' on turn ' + str(turn) + ' was below average compared to other turns today.')
+        elif score == ((totalscore-score)/(turn-1)):
+            print('Your score of ' + str(score) + ' on turn ' + str(turn) + ' was average compared to other turns today.')
+        else:
+            print('Your score of ' + str(score) + ' on turn ' + str(turn) + ' was above average compared to other turns today.')
+        while True:
+            dec = input('Would you like to play another turn? [\'y\', \'n\'])')
+            if dec.lower() == 'y':
+                ifturn = True
+                break
+            elif dec.lower() == 'n':
+                ifturn = False
+                break
+            else:
+                print('I\'m sorry, the choices are [\'y\', \'n\']. Please pick one of them.')        
+    turn = turn + 1
